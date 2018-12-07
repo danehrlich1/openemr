@@ -86,4 +86,5 @@ find gacl/admin/templates_c -type d -print0 | xargs -0 chmod 700
 #rm -f ippf_upgrade.php
 #rm -f gacl/setup.php
 #echo "Setup scripts removed, we should be ready to go now!"
+rm -rf /var/www/config/linux
 apache2ctl -k restart
