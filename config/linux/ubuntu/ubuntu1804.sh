@@ -24,10 +24,11 @@ composer clearcache
 npm cache clear --force 
 rm -fr node_modules 
 cd ../ 
-chmod 666 openemr/sites/default/sqlconf.php 
-chmod 666 openemr/interface/modules/zend_modules/config/application.config.php 
-chown -R www-data openemr/ 
 mv openemr /var/www/ 
+chown -R www-data /var/www/openemr/
+chmod 666 /var/www/openemr/sites/default/sqlconf.php
+chmod 666 /var/www/openemr/interface/modules/zend_modules/config/application.config.php
+
 
 ### SSL
 #git clone https://github.com/letsencrypt/letsencrypt /opt/certbot 
@@ -49,9 +50,9 @@ rm -rf /var/www/html
 rm -f /etc/apache2/apache2.conf
 rm -f /etc/apache2/conf-enabled/security.conf
 rm -f /etc/apache2/sites-enabled/000-default.conf
-cp /config/linux/ubuntu/apache/apache2.conf /etc/apache2/
-cp /config/linux/ubuntu/apache/openemr.conf /etc/apache2/sites-enabled
-cp /config/linux/ubuntu/apache/security.conf /etc/apache2/conf-enabled
+ cp /var/www/openemr/config/linux/ubuntu/apache/apache2.conf /etc/apache2/
+ cp /var/www/openemr/config/linux/ubuntu/apache/openemr.conf /etc/apache2/sites-enabled
+ cp /var/www/openemr/config/linux/ubuntu/apache/security.conf /etc/apache2/conf-enabled
 
 ### Load Mods...
 #ln -s /etc/apache2/mods-available/socache_smcb.load /etc/apache2/mods-avaibled/socache_smcb.load 
