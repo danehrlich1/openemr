@@ -151,6 +151,7 @@ cd /etc/apache2/modsecurity.d/  && \
 source /etc/apache2/envvars
 httpd -t
 sed -ie 's/setvar:tx.paranoia_level=1/setvar:tx.paranoia_level=2/g' /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf
+# remove additional hash signs for paranoia level
 sed -ie 's/SecRuleEngine DetectionOnly/SecRuleEngine On/g' /etc/apache2/modsecurity.d/modsecurity.conf
 source /etc/apache2/envvars
 apache2ctl -k start
