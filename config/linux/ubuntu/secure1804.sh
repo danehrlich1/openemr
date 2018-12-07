@@ -62,4 +62,8 @@ apache2ctl -k restart
 
 ### UFW
 
+sudo ufw allow ‘Apache Full’
+sudo ufw allow ssh
+sudo ufw limit ssh
+
 ### SSH Config
