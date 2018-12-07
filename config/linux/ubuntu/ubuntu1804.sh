@@ -1,3 +1,4 @@
+### Repos 
 add-apt-repository ppa:ondrej/php
 apt-get update
 apt-get upgrade -y
@@ -8,6 +9,7 @@ apt-get install apt-transport-https -y
 #aptitude install npm -y
 apt-get install php7.2 npm apache2 php7.2-bcmath build-essential libapache2-mod-evasive php7.2-bz2 php7.2-cgi php7.2-cli php7.2-common php7.2-curl php7.2-dba php7.2-enchant php7.2-fpm php7.2-gd php7.2-gmp php7.2-imap php7.2-interbase php7.2-intl php7.2-json php7.2-ldap php7.2-mbstring php7.2-mysql php7.2-odbc php7.2-opcache php7.2-pgsql php7.2-phpdbg php7.2-pspell php7.2-readline php7.2-recode php7.2-snmp php7.2-soap php7.2-sqlite3 php7.2-tidy php7.2-xml php7.2-xsl php7.2-zip php-redis php-igbinary php7.2-mysql perl tar curl nodejs mysql-client python python-pip imagemagick libapache2-mod-php7.2 git composer vim -y
 
+### Composer and NPM Install
 git clone https://github.com/danehrlich1/openemr.git
 rm -rf openemr/.git
 cd openemr 
@@ -40,21 +42,16 @@ openssl req -x509 -newkey rsa:4096 \
 -days 1065 -nodes \
 -subj "/C=xx/ST=x/L=x/O=x/OU=x/CN=localhost"
 
-#rm -f /etc/ssl/certs/webserver.cert.pem
-#rm -f /etc/ssl/private/webserver.key.pem
-#ln -s /etc/ssl/certs/selfsigned.cert.pem /etc/ssl/certs/webserver.cert.pem
-#ln -s /etc/ssl/private/selfsigned.key.pem /etc/ssl/private/webserver.key.pem
-
-### Config Files
+### Apache Config Files
 rm -rf /var/www/html
 rm -f /etc/apache2/apache2.conf
 rm -f /etc/apache2/conf-enabled/security.conf
 rm -f /etc/apache2/sites-enabled/000-default.conf
- cp /var/www/openemr/config/linux/ubuntu/apache/apache2.conf /etc/apache2/
- cp /var/www/openemr/config/linux/ubuntu/apache/openemr.conf /etc/apache2/sites-enabled
- cp /var/www/openemr/config/linux/ubuntu/apache/security.conf /etc/apache2/conf-enabled
+cp /var/www/openemr/config/linux/ubuntu/apache/apache2.conf /etc/apache2/
+cp /var/www/openemr/config/linux/ubuntu/apache/openemr.conf /etc/apache2/sites-enabled
+cp /var/www/openemr/config/linux/ubuntu/apache/security.conf /etc/apache2/conf-enabled
 
-### Load Mods...
+### Load Apache Modules
 #ln -s /etc/apache2/mods-available/socache_smcb.load /etc/apache2/mods-avaibled/socache_smcb.load 
 #ln -s /etc/apache2/mods-available/ssl.conf /etc/apache2/mods-enabled/ssl.conf
 #ln -s ssl.load /etc/apache2/mods-available/ssl.load /etc/apache2/mods-enabled/ssl.load
@@ -64,7 +61,6 @@ a2enmod rewrite ssl socache_smcb evasive headers
 ### More File Permissions
 echo "Default file permissions and ownership set, allowing writing to specific directories"
 cd /var/www/openemr
-# Set file and directory permissions
 chmod 600 interface/modules/zend_modules/config/application.config.php
 find sites/default/documents -type d -print0 | xargs -0 chmod 700
 find sites/default/edi -type d -print0 | xargs -0 chmod 700
@@ -87,4 +83,6 @@ find gacl/admin/templates_c -type d -print0 | xargs -0 chmod 700
 #rm -f gacl/setup.php
 #echo "Setup scripts removed, we should be ready to go now!"
 rm -rf /var/www/config/linux
+
+### Start Up
 apache2ctl -k restart
