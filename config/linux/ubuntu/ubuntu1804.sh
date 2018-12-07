@@ -63,7 +63,6 @@ a2enmod rewrite ssl socache_smcb evasive headers
 ### More File Permissions
 echo "Default file permissions and ownership set, allowing writing to specific directories"
 cd /var/www/openemr
-chmod 700 run_openemr.sh
 # Set file and directory permissions
 chmod 600 interface/modules/zend_modules/config/application.config.php
 find sites/default/documents -type d -print0 | xargs -0 chmod 700
