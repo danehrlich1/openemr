@@ -1,4 +1,4 @@
-sudo add-apt-repository ppa:ondrej/php
+add-apt-repository ppa:ondrej/php
 apt-get update
 apt-get upgrade -y
 apt-get install apt-transport-https -y
