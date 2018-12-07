@@ -1,3 +1,7 @@
+######
+###### Begin ######
+######
+
 ### Repos 
 add-apt-repository ppa:ondrej/php
 apt-get update
@@ -31,11 +35,9 @@ chown -R www-data /var/www/openemr/
 chmod 666 /var/www/openemr/sites/default/sqlconf.php
 chmod 666 /var/www/openemr/interface/modules/zend_modules/config/application.config.php
 
-
 ### SSL
 #git clone https://github.com/letsencrypt/letsencrypt /opt/certbot 
 #pip install -e /opt/certbot/acme -e /opt/certbot 
- 
 openssl req -x509 -newkey rsa:4096 \
 -keyout /etc/ssl/private/selfsigned.key.pem \
 -out /etc/ssl/certs/selfsigned.cert.pem \
@@ -84,9 +86,13 @@ find gacl/admin/templates_c -type d -print0 | xargs -0 chmod 700
 #echo "Setup scripts removed, we should be ready to go now!"
 rm -rf /var/www/config/linux
 
+######
+###### Security ######
+######
 
-### ModSecure
+### ModSecurity
 
+### Get ModSecurity Prerequisites
 apt-get -y update && \
     apt-get -y install git \
     libtool \
@@ -104,9 +110,9 @@ apt-get -y update && \
     apache2 \
     apache2-dev
 
+### Get Modsecurity V3 and Build
 cd /opt && \
     git clone -b v3/master https://github.com/SpiderLabs/ModSecurity
-
 cd /opt/ModSecurity && \
     sh build.sh && \
     git submodule init && \
@@ -114,25 +120,24 @@ cd /opt/ModSecurity && \
     ./configure && \
     make && \
     make install
-
 ln -s /usr/sbin/apache2 /usr/sbin/httpd
  
-    
+### Get Apache Connector    
 cd /opt && \
     git clone https://github.com/SpiderLabs/ModSecurity-apache
-
 cd /opt/ModSecurity-apache/ && \
     ./autogen.sh && \
     ./configure && \
     make && \
     make install
-    
+
+### Load Module
 mkdir -p /etc/apache2/modsecurity.d/ && \
     echo "LoadModule security3_module \"$(find /opt/ModSecurity-apache/ -name mod_security3.so)\"" > /etc/apache2/mods-enabled/security.conf && \
     echo "modsecurity_rules 'SecRuleEngine On'" >> /etc/apache2/mods-enabled/security.conf && \
     echo "modsecurity_rules_file '/etc/apache2/modsecurity.d/include.conf'" >> /etc/apache2/mods-enabled/security.conf
-    
 
+### Get OWASP Rules
 cd /etc/apache2/modsecurity.d/  && \
     mv /opt/ModSecurity/modsecurity.conf-recommended /etc/apache2/modsecurity.d/modsecurity.conf && \
     echo include modsecurity.conf >> /etc/apache2/modsecurity.d/include.conf && \
@@ -140,11 +145,15 @@ cd /etc/apache2/modsecurity.d/  && \
     mv /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf.example /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf && \
     echo include owasp-crs/crs-setup.conf >> /etc/apache2/modsecurity.d/include.conf && \
     echo include owasp-crs/rules/\*.conf >> /etc/apache2/modsecurity.d/include.conf
-
+    cp /opt/ModSecurity/unicode.mapping /etc/apache2/modsecurity.d/
+ 
+### Final Edits
 source /etc/apache2/envvars
+httpd -t
 sed -ie 's/setvar:tx.paranoia_level=1/setvar:tx.paranoia_level=2/g' /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf
 sed -ie 's/SecRuleEngine DetectionOnly/SecRuleEngine On/g' /etc/apache2/modsecurity.d/modsecurity.conf
-apache2ctl -k restart
+source /etc/apache2/envvars
+apache2ctl -k start
 
 ### ModEvasive
 
