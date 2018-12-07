@@ -54,6 +54,9 @@ cd /etc/apache2/modsecurity.d/  && \
     echo include owasp-crs/crs-setup.conf >> /etc/apache2/modsecurity.d/include.conf && \
     echo include owasp-crs/rules/\*.conf >> /etc/apache2/modsecurity.d/include.conf
 
+source /etc/apache2/envvars
+sed -ie 's/setvar:tx.paranoia_level=1/setvar:tx.paranoia_level=2/g' /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf
+sed -ie 's/SecRuleEngine DetectionOnly/SecRuleEngine On/g' /etc/apache2/modsecurity.d/modsecurity.conf
 apache2ctl -k restart
 
 ### ModEvasive
