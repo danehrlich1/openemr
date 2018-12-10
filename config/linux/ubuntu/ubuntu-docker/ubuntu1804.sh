@@ -6,7 +6,6 @@
 #add-apt-repository ppa:ondrej/php
 
 
-update && apt-get install apt-transport-https software-properties-common -y
 add-apt-repository ppa:maxmind/ppa
 apt-get -y install \
     libtool \
