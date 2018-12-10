@@ -53,7 +53,7 @@ cp /var/www/openemr/config/linux/ubuntu/apache/security.conf /etc/apache2/conf-e
 #ln -s /etc/apache2/mods-available/ssl.conf /etc/apache2/mods-enabled/ssl.conf
 #ln -s ssl.load /etc/apache2/mods-available/ssl.load /etc/apache2/mods-enabled/ssl.load
 #ln -s /etc/apache2/mods-available/rewrite.conf /etc/apache2/mods-enabled/rewrite.conf
-a2enmod rewrite ssl socache_smcb evasive headers proxy
+a2enmod rewrite ssl socache_smcb evasive headers proxy allowmethods
 
 ### More File Permissions
 echo "Default file permissions and ownership set, allowing writing to specific directories"
@@ -100,7 +100,7 @@ apt-get -y install \
     libyajl-dev \
     liblmdb-dev \
     ssdeep \
-    lua5.2-dev
+    lua5.2-dev --no-install-recommends
 
 ### Get Modsecurity V3 and Build
 cd /opt && \
