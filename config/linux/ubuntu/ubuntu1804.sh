@@ -139,11 +139,24 @@ cd /etc/apache2/modsecurity.d/  && \
     echo include owasp-crs/rules/\*.conf >> /etc/apache2/modsecurity.d/include.conf
     cp /opt/ModSecurity/unicode.mapping /etc/apache2/modsecurity.d/
 
+
 ### MAXMIND
-# Install both maxmind libraries
-# Download latest database and put in /usr/share/local
 # Program to update database
 # Edit apache.conf to allow maxmind and set <if> block
+add-apt-repository ppa:maxmind/ppa
+apt-get update
+apt-get install libmaxminddb0 libmaxminddb-dev mmdb geoipupdate -y
+wget https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz
+tar -xvf GeoLite2-Country*
+mkdir /usr/local/share/GeoIP
+mv GeoLite2-Country*/GeoLite2-Country.mmdb /usr/local/share/GeoIP
+
+wget https://github.com/maxmind/mod_maxminddb/releases/download/1.1.0/mod_maxminddb-1.1.0.tar.gz
+tar -xvf mod_maxminddb-1.1.0.tar.gz
+cd mod_maxminddb-1.1.0
+./configure
+make install
+# Configure GeoIP update https://dev.maxmind.com/geoip/geoipupdate/
 
 
 ### Final Edits
