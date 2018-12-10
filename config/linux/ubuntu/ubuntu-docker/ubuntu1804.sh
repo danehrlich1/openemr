@@ -55,9 +55,9 @@ rm -rf /var/www/html
 rm -f /etc/apache2/apache2.conf
 rm -f /etc/apache2/conf-enabled/security.conf
 rm -f /etc/apache2/sites-enabled/000-default.conf
-cp /var/www/openemr/config/linux/ubuntu/apache/apache2.conf /etc/apache2/
-cp /var/www/openemr/config/linux/ubuntu/apache/openemr.conf /etc/apache2/sites-enabled
-cp /var/www/openemr/config/linux/ubuntu/apache/security.conf /etc/apache2/conf-enabled
+cp /var/www/openemr/config/linux/ubuntu/ubuntu-docker/apache/apache2.conf /etc/apache2/
+cp /var/www/openemr/config/linux/ubuntu/ubuntu-docker/apache/openemr.conf /etc/apache2/sites-enabled
+cp /var/www/openemr/config/linux/ubuntu/ubuntu-docker/apache/security.conf /etc/apache2/conf-enabled
 
 ### Load Apache Modules
 #ln -s /etc/apache2/mods-available/socache_smcb.load /etc/apache2/mods-avaibled/socache_smcb.load 
