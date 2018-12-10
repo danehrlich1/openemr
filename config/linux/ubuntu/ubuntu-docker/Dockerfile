@@ -18,15 +18,13 @@ RUN apt-get --no-install-recommends -y install \
     lua5.2-dev \
      php7.2 npm apache2-dev apache2  php7.2-bcmath libmaxminddb0 \
      libmaxminddb-dev mmdb-bin wget geoipupdate build-essential \
-     libapache2-mod-evasive php7.2-bz2 php7.2-cgi php7.2-cli php7.2-common \
+     libapache2-mod-evasive php7.2-bz2 php7.2-cli php7.2-common \
      php7.2-curl php7.2-dba php7.2-enchant php7.2-fpm php7.2-gd php7.2-gmp php7.2-imap \
      php7.2-interbase php7.2-intl php7.2-json php7.2-ldap php7.2-mbstring php7.2-mysql php7.2-odbc php7.2-opcache \
-     php7.2-phpdbg php7.2-pspell php7.2-readline php7.2-recode php7.2-snmp php7.2-soap php7.2-tidy php7.2-xml php7.2-xsl php7.2-zip \
-     php-redis php-igbinary php7.2-mysql perl tar curl nodejs mysql-client python python-pip imagemagick libapache2-mod-php7.2 git composer vim gcc -y && rm -rf /var/lib/apt/lists/*
+     php7.2-phpdbg php7.2-pspell php7.2-readline php7.2-recode php7.2-soap php7.2-tidy php7.2-xml php7.2-xsl php7.2-zip \
+     php-redis php-igbinary php7.2-mysql perl tar curl nodejs mysql-client python python-pip imagemagick libapache2-mod-php7.2 git composer vim gcc && rm -rf /var/lib/apt/lists/*
 RUN git clone https://github.com/danehrlich1/openemr.git
 WORKDIR /openemr/config/linux/ubuntu/ubuntu-docker
 RUN chmod 770 ubuntu1804.sh && ./ubuntu1804.sh
 
 EXPOSE 80 443
-
-CMD ["apache2ctl", "-k", "start"]

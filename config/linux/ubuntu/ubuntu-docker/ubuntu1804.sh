@@ -1,12 +1,14 @@
+#!/bin/sh
 ######
 ###### Begin ######
 ######
 
 ### Composer and NPM Install
-composer install 
-npm install --unsafe-perm 
-npm run build 
-composer global require phing/phing 
+cd /openemr
+composer install
+npm install --unsafe-perm
+npm run build
+composer global require phing/phing
 composer global require phing/phing 
 #/root/.composer/vendor/bin/phing vendor-clean \
 #/root/.composer/vendor/bin/phing assets-clean \
