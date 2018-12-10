@@ -138,7 +138,14 @@ cd /etc/apache2/modsecurity.d/  && \
     echo include owasp-crs/crs-setup.conf >> /etc/apache2/modsecurity.d/include.conf && \
     echo include owasp-crs/rules/\*.conf >> /etc/apache2/modsecurity.d/include.conf
     cp /opt/ModSecurity/unicode.mapping /etc/apache2/modsecurity.d/
- 
+
+### MAXMIND
+# Install both maxmind libraries
+# Download latest database and put in /usr/share/local
+# Program to update database
+# Edit apache.conf to allow maxmind and set <if> block
+
+
 ### Final Edits
 source /etc/apache2/envvars
 httpd -t
