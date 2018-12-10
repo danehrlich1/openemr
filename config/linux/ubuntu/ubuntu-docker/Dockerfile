@@ -2,8 +2,8 @@ FROM ubuntu:18.04
 
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt install apt-transport-https git software-properties-common -y
-add-apt-repository ppa:maxmind/ppa
-apt-get -y install \
+RUN add-apt-repository ppa:maxmind/ppa
+RUN apt-get -y install \
     libtool \
     dh-autoreconf \
     pkgconf \
@@ -16,7 +16,7 @@ apt-get -y install \
     liblmdb-dev \
     ssdeep \
     lua5.2-dev \
-     php7.2 npm apache2-dev apache2  php7.2-bcmath libmaxminddb \
+     php7.2 npm apache2-dev apache2  php7.2-bcmath libmaxminddb0 \
      libmaxminddb-dev mmdb-bin wget geoipupdate build-essential \
      libapache2-mod-evasive php7.2-bz2 php7.2-cgi php7.2-cli php7.2-common \
      php7.2-curl php7.2-dba php7.2-enchant php7.2-fpm php7.2-gd php7.2-gmp php7.2-imap \
