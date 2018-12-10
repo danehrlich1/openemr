@@ -4,9 +4,24 @@
 
 ### Repos 
 #add-apt-repository ppa:ondrej/php
-apt-get update && apt-get install apt-transport-https -y && apt-get upgrade -y
-#apt-get install aptitude -y
-apt-get install php7.2 npm apache2-dev apache2 software-properties-common php7.2-bcmath build-essential libapache2-mod-evasive php7.2-bz2 php7.2-cgi php7.2-cli php7.2-common php7.2-curl php7.2-dba php7.2-enchant php7.2-fpm php7.2-gd php7.2-gmp php7.2-imap php7.2-interbase php7.2-intl php7.2-json php7.2-ldap php7.2-mbstring php7.2-mysql php7.2-odbc php7.2-opcache php7.2-phpdbg php7.2-pspell php7.2-readline php7.2-recode php7.2-snmp php7.2-soap php7.2-tidy php7.2-xml php7.2-xsl php7.2-zip php-redis php-igbinary php7.2-mysql perl tar curl nodejs mysql-client python python-pip imagemagick libapache2-mod-php7.2 git composer vim gcc -y — no-install-recommends && rm -rf /var/lib/apt/lists/*
+
+
+update && apt-get install apt-transport-https software-properties-common -y
+add-apt-repository ppa:maxmind/ppa
+apt-get -y install \
+    libtool \
+    dh-autoreconf \
+    pkgconf \
+    libcurl4-gnutls-dev \
+    libxml2 \
+    libpcre++-dev \
+    libxml2-dev \
+    libgeoip-dev \
+    libyajl-dev \
+    liblmdb-dev \
+    ssdeep \
+    lua5.2-dev --no-install-recommends
+apt-get install php7.2 npm apache2-dev apache2  php7.2-bcmath libmaxminddb0 libmaxminddb-dev mmdb-bin wget geoipupdate build-essential libapache2-mod-evasive php7.2-bz2 php7.2-cgi php7.2-cli php7.2-common php7.2-curl php7.2-dba php7.2-enchant php7.2-fpm php7.2-gd php7.2-gmp php7.2-imap php7.2-interbase php7.2-intl php7.2-json php7.2-ldap php7.2-mbstring php7.2-mysql php7.2-odbc php7.2-opcache php7.2-phpdbg php7.2-pspell php7.2-readline php7.2-recode php7.2-snmp php7.2-soap php7.2-tidy php7.2-xml php7.2-xsl php7.2-zip php-redis php-igbinary php7.2-mysql perl tar curl nodejs mysql-client python python-pip imagemagick libapache2-mod-php7.2 git composer vim gcc -y — no-install-recommends && rm -rf /var/lib/apt/lists/*
 
 ### Composer and NPM Install
 git clone https://github.com/danehrlich1/openemr.git
@@ -88,19 +103,7 @@ rm -rf /var/www/config/linux
 ### ModSecurity
 
 ### Get ModSecurity Prerequisites
-apt-get -y install \
-    libtool \
-    dh-autoreconf \
-    pkgconf \
-    libcurl4-gnutls-dev \
-    libxml2 \
-    libpcre++-dev \
-    libxml2-dev \
-    libgeoip-dev \
-    libyajl-dev \
-    liblmdb-dev \
-    ssdeep \
-    lua5.2-dev --no-install-recommends
+
 
 ### Get Modsecurity V3 and Build
 cd /opt && \
@@ -143,9 +146,6 @@ cd /etc/apache2/modsecurity.d/  && \
 ### MAXMIND
 # Program to update database
 # Edit apache.conf to allow maxmind and set <if> block
-add-apt-repository ppa:maxmind/ppa
-apt-get update
-apt-get install libmaxminddb0 libmaxminddb-dev mmdb-bin wget geoipupdate -y — no-install-recommends && rm -rf /var/lib/apt/lists/*
 wget https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz
 tar -xvf GeoLite2-Country*
 mkdir /usr/local/share/GeoIP
