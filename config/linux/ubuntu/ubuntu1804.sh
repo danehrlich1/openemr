@@ -145,7 +145,7 @@ cd /etc/apache2/modsecurity.d/  && \
 # Edit apache.conf to allow maxmind and set <if> block
 add-apt-repository ppa:maxmind/ppa
 apt-get update
-apt-get install libmaxminddb0 libmaxminddb-dev mmdb geoipupdate -y
+apt-get install libmaxminddb0 libmaxminddb-dev mmdb-bin wget geoipupdate -y — no-install-recommends && rm -rf /var/lib/apt/lists/*
 wget https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz
 tar -xvf GeoLite2-Country*
 mkdir /usr/local/share/GeoIP
