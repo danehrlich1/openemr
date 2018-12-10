@@ -35,7 +35,7 @@ composer dump-autoload -o
 composer clearcache 
 npm cache clear --force 
 rm -fr node_modules 
-cd ../ 
+cd / 
 mv openemr /var/www/ 
 chown -R www-data /var/www/openemr/
 chmod 666 /var/www/openemr/sites/default/sqlconf.php
