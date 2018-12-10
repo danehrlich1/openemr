@@ -44,7 +44,7 @@ cp /var/www/openemr/config/linux/ubuntu/ubuntu-docker/apache/security.conf /etc/
 #ln -s /etc/apache2/mods-available/ssl.conf /etc/apache2/mods-enabled/ssl.conf
 #ln -s ssl.load /etc/apache2/mods-available/ssl.load /etc/apache2/mods-enabled/ssl.load
 #ln -s /etc/apache2/mods-available/rewrite.conf /etc/apache2/mods-enabled/rewrite.conf
-a2enmod rewrite ssl evasive headers proxy allowmethods
+a2enmod ssl evasive headers proxy allowmethods
 
 ### More File Permissions
 echo "Default file permissions and ownership set, allowing writing to specific directories"
@@ -142,7 +142,7 @@ sed -ie 's/setvar:tx.paranoia_level=1/setvar:tx.paranoia_level=2/g' /etc/apache2
 # remove additional hash signs for paranoia level
 sed -ie 's/SecRuleEngine DetectionOnly/SecRuleEngine On/g' /etc/apache2/modsecurity.d/modsecurity.conf
 #source /etc/apache2/envvars
-apache2ctl -k start
+#apache2ctl -k start
 
 ### ModEvasive
 
