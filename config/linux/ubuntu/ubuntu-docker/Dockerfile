@@ -3,7 +3,7 @@ FROM ubuntu:18.04
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt install apt-transport-https git software-properties-common -y
 RUN add-apt-repository ppa:maxmind/ppa
-RUN apt-get -y install \
+RUN apt-get --no-install-recommends -y install \
     libtool \
     dh-autoreconf \
     pkgconf \
