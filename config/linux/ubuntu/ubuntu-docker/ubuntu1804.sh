@@ -2,26 +2,6 @@
 ###### Begin ######
 ######
 
-### Repos 
-#add-apt-repository ppa:ondrej/php
-
-
-add-apt-repository ppa:maxmind/ppa
-apt-get -y install \
-    libtool \
-    dh-autoreconf \
-    pkgconf \
-    libcurl4-gnutls-dev \
-    libxml2 \
-    libpcre++-dev \
-    libxml2-dev \
-    libgeoip-dev \
-    libyajl-dev \
-    liblmdb-dev \
-    ssdeep \
-    lua5.2-dev
-apt-get install php7.2 npm apache2-dev apache2  php7.2-bcmath libmaxminddb0 libmaxminddb-dev mmdb-bin wget geoipupdate build-essential libapache2-mod-evasive php7.2-bz2 php7.2-cgi php7.2-cli php7.2-common php7.2-curl php7.2-dba php7.2-enchant php7.2-fpm php7.2-gd php7.2-gmp php7.2-imap php7.2-interbase php7.2-intl php7.2-json php7.2-ldap php7.2-mbstring php7.2-mysql php7.2-odbc php7.2-opcache php7.2-phpdbg php7.2-pspell php7.2-readline php7.2-recode php7.2-snmp php7.2-soap php7.2-tidy php7.2-xml php7.2-xsl php7.2-zip php-redis php-igbinary php7.2-mysql perl tar curl nodejs mysql-client python python-pip imagemagick libapache2-mod-php7.2 git composer vim gcc -y 
-
 ### Composer and NPM Install
 composer install 
 npm install --unsafe-perm 
@@ -64,7 +44,7 @@ cp /var/www/openemr/config/linux/ubuntu/ubuntu-docker/apache/security.conf /etc/
 #ln -s /etc/apache2/mods-available/ssl.conf /etc/apache2/mods-enabled/ssl.conf
 #ln -s ssl.load /etc/apache2/mods-available/ssl.load /etc/apache2/mods-enabled/ssl.load
 #ln -s /etc/apache2/mods-available/rewrite.conf /etc/apache2/mods-enabled/rewrite.conf
-a2enmod rewrite ssl socache_smcb evasive headers proxy allowmethods
+a2enmod rewrite ssl evasive headers proxy allowmethods
 
 ### More File Permissions
 echo "Default file permissions and ownership set, allowing writing to specific directories"
@@ -90,7 +70,7 @@ find gacl/admin/templates_c -type d -print0 | xargs -0 chmod 700
 #rm -f ippf_upgrade.php
 #rm -f gacl/setup.php
 #echo "Setup scripts removed, we should be ready to go now!"
-rm -rf /var/www/config/linux
+#rm -rf /var/www/config/linux
 
 ######
 ###### Security ######
@@ -156,13 +136,13 @@ make install
 
 
 ### Final Edits
-source /etc/apache2/envvars
-httpd -t
+#source /etc/apache2/envvars
+#httpd -t
 sed -ie 's/setvar:tx.paranoia_level=1/setvar:tx.paranoia_level=2/g' /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf
 # remove additional hash signs for paranoia level
 sed -ie 's/SecRuleEngine DetectionOnly/SecRuleEngine On/g' /etc/apache2/modsecurity.d/modsecurity.conf
-source /etc/apache2/envvars
-#apache2ctl -k start
+#source /etc/apache2/envvars
+apache2ctl -k start
 
 ### ModEvasive
 
@@ -173,5 +153,5 @@ source /etc/apache2/envvars
 #sudo ufw allow ‘Apache Full’
 #sudo ufw allow ssh
 #sudo ufw limit ssh
-#— no-install-recommends && rm -rf /var/lib/apt/lists/*
+#— no-install-recommends
 ### SSH Config
