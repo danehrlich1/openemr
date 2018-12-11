@@ -40,6 +40,7 @@ rm -f /etc/apache2/sites-enabled/000-default.conf
 cp /var/www/openemr/config/linux/ubuntu/ubuntu-docker/apache/apache2.conf /etc/apache2/
 cp /var/www/openemr/config/linux/ubuntu/ubuntu-docker/apache/openemr.conf /etc/apache2/sites-enabled
 cp /var/www/openemr/config/linux/ubuntu/ubuntu-docker/apache/security.conf /etc/apache2/conf-enabled
+cp /var/www/openemr/config/linux/ubuntu/ubuntu-docker/GeoIP.conf /usr/local/etc/
 
 ### Load Apache Modules
 #ln -s /etc/apache2/mods-available/socache_smcb.load /etc/apache2/mods-avaibled/socache_smcb.load 
@@ -135,7 +136,11 @@ cd mod_maxminddb-1.1.0
 ./configure
 make install
 # Configure GeoIP update https://dev.maxmind.com/geoip/geoipupdate/
-
+go get -u -v github.com/maxmind/geoipupdate2/cmd/geoipupdate
+cp -R go/bin/geoipupdate /usr/local/bin/
+crontab -l | { cat; echo "0 1 * * 1-7 rm -f /usr/local/share/GeoIP/G* \
+&& geoipupdate -d /usr/local/share/GeoIP && apache2ctl -k graceful"; } | crontab -
+### remove GO?
 
 ### Final Edits
 #source /etc/apache2/envvars
