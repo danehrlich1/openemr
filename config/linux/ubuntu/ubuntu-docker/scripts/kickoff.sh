@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 #--cap-add=NET_ADMIN
 
 wget https://raw.githubusercontent.com/stamparm/ipsum/master/levels/4.txt
