@@ -17,6 +17,12 @@ RUN apt-get --no-install-recommends -y install \
     liblmdb-dev \
     ssdeep \
     lua5.2-dev \
+    ufw \
+    iputils-ping \
+    net-tools \
+    python-pip \
+    python3.6 \
+    python2.7 \
      php7.2 npm apache2-dev apache2  php7.2-bcmath libmaxminddb0 \
      libmaxminddb-dev mmdb-bin wget geoipupdate build-essential \
      libapache2-mod-evasive php7.2-bz2 php7.2-cli php7.2-common \

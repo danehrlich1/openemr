@@ -1,14 +1,12 @@
 FROM danora/openemr-secure:emr
 
 ARG DEBIAN_FRONTEND=noninteractive
+
 #####
 ###### Security ######
 ######
 
 ### ModSecurity
-
-### Get ModSecurity Prerequisites
-
 
 ### Get Modsecurity V3 and Build
 RUN cd /opt && \
@@ -47,9 +45,7 @@ RUN cd /etc/apache2/modsecurity.d/ \
     && echo include owasp-crs/rules/\*.conf >> /etc/apache2/modsecurity.d/include.conf \
     && cp /opt/ModSecurity/unicode.mapping /etc/apache2/modsecurity.d/
 
-
 ### MAXMIND
-# Program to update database
 # Edit apache.conf to allow maxmind and set <if> block
 RUN wget https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz \
   && tar -xvf GeoLite2-Country* && mkdir /usr/local/share/GeoIP \
@@ -73,16 +69,15 @@ RUN ./configure \
 RUN sed -ie 's/setvar:tx.paranoia_level=1/setvar:tx.paranoia_level=2/g' /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf && \
   sed -ie 's/SecRuleEngine DetectionOnly/SecRuleEngine On/g' /etc/apache2/modsecurity.d/modsecurity.conf
   #source /etc/apache2/envvars
-  #apache2ctl -k start
 
 ### ModEvasive
 
-### Fail2Ban
+### IP Blacklisting
 
 ### UFW
 
-#sudo ufw allow ‘Apache Full’
-#sudo ufw allow ssh
-#sudo ufw limit ssh
+RUN ufw allow ‘Apache Full’  \
+  && ufw allow ssh \
+  && ufw limit ssh
+
 #— no-install-recommends
-### SSH Config
