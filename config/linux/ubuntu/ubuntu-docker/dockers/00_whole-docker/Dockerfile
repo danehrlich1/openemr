@@ -1,16 +1,50 @@
-FROM danora/openemr-secure:emr
-
+FROM ubuntu:18.04
 ARG DEBIAN_FRONTEND=noninteractive
-#####
-###### Security ######
-######
 
-### ModSecurity
+###
+### Install Prerequisites
+###
+RUN apt-get update && apt install apt-transport-https git software-properties-common -y
+RUN add-apt-repository ppa:maxmind/ppa
+RUN apt-get --no-install-recommends -y install \
+    libtool \
+    dh-autoreconf \
+    pkgconf \
+    libcurl4-gnutls-dev \
+    libxml2 \
+    libpcre++-dev \
+    libxml2-dev \
+    libgeoip-dev \
+    libyajl-dev \
+    liblmdb-dev \
+    ssdeep \
+    lua5.2-dev \
+    ufw \
+    iputils-ping \
+    net-tools \
+    python-pip \
+    python3.6 \
+    python2.7 \
+     php7.2 npm apache2-dev apache2  php7.2-bcmath libmaxminddb0 \
+     libmaxminddb-dev mmdb-bin wget geoipupdate build-essential \
+     libapache2-mod-evasive php7.2-bz2 php7.2-cli php7.2-common \
+     php7.2-curl php7.2-dba php7.2-enchant php7.2-fpm php7.2-gd php7.2-gmp php7.2-imap \
+     php7.2-interbase php7.2-intl php7.2-json php7.2-ldap php7.2-mbstring php7.2-mysql php7.2-odbc php7.2-opcache \
+     php7.2-phpdbg php7.2-pspell php7.2-readline php7.2-recode php7.2-soap php7.2-tidy php7.2-xml php7.2-xsl php7.2-zip \
+     php-redis php-igbinary php7.2-mysql golang-go perl tar curl nodejs mysql-client python python-pip imagemagick libapache2-mod-php7.2 git composer vim gcc && rm -rf /var/lib/apt/lists/*
 
-### Get ModSecurity Prerequisites
+
+###
+### Build OpenEMR
+###
+RUN git clone https://github.com/danehrlich1/openemr.git
+WORKDIR /openemr/config/linux/ubuntu/ubuntu-docker
+RUN chmod 770 ./ubuntu1804.sh && ./ubuntu1804.sh
 
 
-### Get Modsecurity V3 and Build
+###
+### Secure Container
+###
 RUN cd /opt && \
     git clone -b v3/master https://github.com/SpiderLabs/ModSecurity
 RUN cd /opt/ModSecurity && \
@@ -47,9 +81,11 @@ RUN cd /etc/apache2/modsecurity.d/ \
     && echo include owasp-crs/rules/\*.conf >> /etc/apache2/modsecurity.d/include.conf \
     && cp /opt/ModSecurity/unicode.mapping /etc/apache2/modsecurity.d/
 
+### Edit Config Files
+RUN sed -ie 's/setvar:tx.paranoia_level=1/setvar:tx.paranoia_level=2/g' /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf && \
+  sed -ie 's/SecRuleEngine DetectionOnly/SecRuleEngine On/g' /etc/apache2/modsecurity.d/modsecurity.conf
 
-### MAXMIND
-# Program to update database
+### MaxMind GeoIP
 # Edit apache.conf to allow maxmind and set <if> block
 RUN wget https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz \
   && tar -xvf GeoLite2-Country* && mkdir /usr/local/share/GeoIP \
@@ -63,26 +99,24 @@ RUN ./configure \
   && go get -u -v github.com/maxmind/geoipupdate2/cmd/geoipupdate && cp -R go/bin/geoipupdate /usr/local/bin/
 
 # Configure GeoIP update https://dev.maxmind.com/geoip/geoipupdate/
-#crontab -l | { cat; echo "0 1 * * 1-7 rm -f /usr/local/share/GeoIP/G* \
-#&& geoipupdate -d /usr/local/share/GeoIP && apache2ctl -k graceful"; } | crontab -
+# crontab -l | { cat; echo "0 1 * * 1-7 rm -f /usr/local/share/GeoIP/G* \
+# && geoipupdate -d /usr/local/share/GeoIP && apache2ctl -k graceful"; } | crontab -
 ### remove GO?
 
-### Final Edits
+### UFW
+RUN ufw allow "Apache Full" \
+  && ufw allow ssh \
+  && ufw limit ssh
+
+### IP Blacklisting
+
+
+###
+### Start Container
+###
 #source /etc/apache2/envvars
 #httpd -t
-RUN sed -ie 's/setvar:tx.paranoia_level=1/setvar:tx.paranoia_level=2/g' /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf && \
-  sed -ie 's/SecRuleEngine DetectionOnly/SecRuleEngine On/g' /etc/apache2/modsecurity.d/modsecurity.conf
-  #source /etc/apache2/envvars
-  #apache2ctl -k start
+#source /etc/apache2/envvars
 
-### ModEvasive
 
-### Fail2Ban
 
-### UFW
-
-#sudo ufw allow ‘Apache Full’
-#sudo ufw allow ssh
-#sudo ufw limit ssh
-#— no-install-recommends
-### SSH Config
