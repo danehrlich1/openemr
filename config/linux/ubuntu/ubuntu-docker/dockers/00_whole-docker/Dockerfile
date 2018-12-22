@@ -1,9 +1,10 @@
 FROM ubuntu:18.04
 ARG DEBIAN_FRONTEND=noninteractive
 
-###
-### Install Prerequisites
-###
+######
+###### Install Prerequisites ######
+######
+
 RUN apt-get update && apt install apt-transport-https git software-properties-common -y
 RUN add-apt-repository ppa:maxmind/ppa
 RUN apt-get --no-install-recommends -y install \
@@ -31,20 +32,25 @@ RUN apt-get --no-install-recommends -y install \
      php7.2-curl php7.2-dba php7.2-enchant php7.2-fpm php7.2-gd php7.2-gmp php7.2-imap \
      php7.2-interbase php7.2-intl php7.2-json php7.2-ldap php7.2-mbstring php7.2-mysql php7.2-odbc php7.2-opcache \
      php7.2-phpdbg php7.2-pspell php7.2-readline php7.2-recode php7.2-soap php7.2-tidy php7.2-xml php7.2-xsl php7.2-zip \
-     php-redis php-igbinary php7.2-mysql golang-go perl tar curl nodejs mysql-client python python-pip imagemagick libapache2-mod-php7.2 git composer vim gcc && rm -rf /var/lib/apt/lists/*
+     php-redis php-igbinary php7.2-mysql golang-go perl tar curl nodejs mysql-client python python-pip imagemagick libapache2-mod-php7.2 git composer vim gcc \
+     && rm -rf /var/lib/apt/lists/*
 
 
-###
-### Build OpenEMR
-###
+######
+###### Build OpenEMR ######
+######
 RUN git clone https://github.com/danehrlich1/openemr.git
 WORKDIR /openemr/config/linux/ubuntu/ubuntu-docker
 RUN chmod 770 ./ubuntu1804.sh && ./ubuntu1804.sh
 
 
-###
-### Secure Container
-###
+#####
+###### Security ######
+######
+
+### ModSecurity
+
+### Get Modsecurity V3 and Build
 RUN cd /opt && \
     git clone -b v3/master https://github.com/SpiderLabs/ModSecurity
 RUN cd /opt/ModSecurity && \
@@ -81,42 +87,27 @@ RUN cd /etc/apache2/modsecurity.d/ \
     && echo include owasp-crs/rules/\*.conf >> /etc/apache2/modsecurity.d/include.conf \
     && cp /opt/ModSecurity/unicode.mapping /etc/apache2/modsecurity.d/
 
-### Edit Config Files
-RUN sed -ie 's/setvar:tx.paranoia_level=1/setvar:tx.paranoia_level=2/g' /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf && \
-  sed -ie 's/SecRuleEngine DetectionOnly/SecRuleEngine On/g' /etc/apache2/modsecurity.d/modsecurity.conf
-
-### MaxMind GeoIP
+### MAXMIND
 # Edit apache.conf to allow maxmind and set <if> block
 RUN wget https://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz \
   && tar -xvf GeoLite2-Country* && mkdir /usr/local/share/GeoIP \
-  && mv GeoLite2-Country*/GeoLite2-Country.mmdb /usr/local/share/GeoIP
-
-RUN wget https://github.com/maxmind/mod_maxminddb/releases/download/1.1.0/mod_maxminddb-1.1.0.tar.gz \
+  && mv GeoLite2-Country*/GeoLite2-Country.mmdb /usr/local/share/GeoIP \
+  && wget https://github.com/maxmind/mod_maxminddb/releases/download/1.1.0/mod_maxminddb-1.1.0.tar.gz \
   && tar -xvf mod_maxminddb-1.1.0.tar.gz \
-  && cd mod_maxminddb-1.1.0
-RUN ./configure \
-  && make install \
-  && go get -u -v github.com/maxmind/geoipupdate2/cmd/geoipupdate && cp -R go/bin/geoipupdate /usr/local/bin/
+  && cd mod_maxminddb-1.1.0 \
+  && ./configure \
+  && make install
 
-# Configure GeoIP update https://dev.maxmind.com/geoip/geoipupdate/
-# crontab -l | { cat; echo "0 1 * * 1-7 rm -f /usr/local/share/GeoIP/G* \
-# && geoipupdate -d /usr/local/share/GeoIP && apache2ctl -k graceful"; } | crontab -
-### remove GO?
+### Final Edits
+RUN sed -ie 's/setvar:tx.paranoia_level=1/setvar:tx.paranoia_level=2/g' /etc/apache2/modsecurity.d/owasp-crs/crs-setup.conf && \
+  sed -ie 's/SecRuleEngine DetectionOnly/SecRuleEngine On/g' /etc/apache2/modsecurity.d/modsecurity.conf
 
-### UFW
-RUN ufw allow "Apache Full" \
-  && ufw allow ssh \
-  && ufw limit ssh
+### ModEvasive
 
 ### IP Blacklisting
 
-
-###
-### Start Container
-###
-#source /etc/apache2/envvars
-#httpd -t
-#source /etc/apache2/envvars
-
+#— no-install-recommends
+RUN service apache2 start
+EXPOSE 80 443
 
 
